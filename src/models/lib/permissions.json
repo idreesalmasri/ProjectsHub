@@ -1,0 +1,26 @@
+{
+    "usersModule": {
+        "superAdmin": ["read", "create", "delete", "update"],
+        "projectManager": ["read"],
+        "teamLeader": ["read"],
+        "teamMember": ["read"]
+    },
+    "projectsModule": {
+        "superAdmin": ["read", "create", "delete", "update"],
+        "projectManager": ["read", "update"],
+        "teamLeader": ["read"],
+        "teamMember": ["read"]
+    },
+    "teamsModule": {
+        "superAdmin": ["read", "create", "delete", "update"],
+        "projectManager": ["read", "update", "delete", "update"],
+        "teamLeader": ["read"],
+        "teamMember": ["read"]
+    },
+    "tasksModule": {
+        "superAdmin": ["read", "create", "delete", "update"],
+        "projectManager": ["read", "create", "delete", "update"],
+        "teamLeader": ["read", "update"],
+        "teamMember": ["read", "update"]
+    }
+}

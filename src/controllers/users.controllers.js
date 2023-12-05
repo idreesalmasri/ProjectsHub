@@ -26,8 +26,14 @@ const createUser=async(req,res,next)=>{
             user: userData,
         });
     } catch (error) {
-        console.log(error.detail);
-        next(error)
+        // console.log(error.errors[0].path);
+        if (error.name === "SequelizeUniqueConstraintError"){
+            return res.status(400).json({
+                message:"Invalid data provided",
+                details:error.parent.detail
+            })
+        }
+        next(error);
     }
 }
 const signInHandler=async (req,res,next)=>{

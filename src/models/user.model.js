@@ -1,7 +1,8 @@
-'use strict';
-const permissions=require('./lib/permissions.json')
-const usersModelCreator=(sequelize,DataTypes)=>{
-    const usersModel = sequelize.define("user", {
+"use strict";
+const permissions = require("./lib/permissions.json");
+const bcrypt = require("bcrypt");
+const usersModelCreator = (sequelize, DataTypes) => {
+    const userModel = sequelize.define("user", {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -55,19 +56,30 @@ const usersModelCreator=(sequelize,DataTypes)=>{
         },
         capabilities: {
             type: DataTypes.VIRTUAL,
-            get: () => {
-                return [
-                    { usersModule: permissions.usersModule[this.role] },
-                    { projectsModule: permissions.projectsModule[this.role] },
-                    { teamsModule: permissions.teamsModule[this.role] },
-                    { tasksModule: permissions.tasksModule[this.role] },
-                ];
+            get() {
+                return {
+                    usersModule: permissions.usersModule[this.role],
+                    projectsModule: permissions.projectsModule[this.role],
+                    teamsModule: permissions.teamsModule[this.role],
+                    tasksModule: permissions.tasksModule[this.role],
+                };
             },
         },
     });
-    return usersModel;
-}
+    userModel.validatePassword = async (insertedEmail, password) => {
+        const user = await userModel.findOne({
+            where: { email: insertedEmail },
+        });
+        if (!user) return { valid: false, message: "Invalid email" };
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) {
+            return { valid: false, message: "Invalid password" };
+        }
+        return { valid: true, user };
+    };
+    return userModel;
+};
 
 module.exports = {
-    usersModelCreator
+    usersModelCreator,
 };

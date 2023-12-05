@@ -6,32 +6,37 @@ const { usersModelCreator } = require("../models/user.model");
 const { projectModelCreator } = require("./projects.model");
 const { taskModelCreator } = require("./tasks.model");
 const {teamModelCreator}=require('./teams.model')
+const {organizationModelCreator}=require('./organization.model')
 const sequelize=new Sequelize(dbString,{});
 const userModel=usersModelCreator(sequelize,DataTypes);
 const projectModel=projectModelCreator(sequelize,DataTypes)
 const taskModel=taskModelCreator(sequelize,DataTypes);
-const teamModel = teamModelCreator(sequelize,DataTypes)
+const teamModel = teamModelCreator(sequelize,DataTypes);
+const organizationModel=organizationModelCreator(sequelize,DataTypes);
 
-projectModel.hasMany(taskModel);
-taskModel.belongsTo(projectModel);
+// organizationModel.hasMany(userModel,{foreignKey:'organizationId', as:'organizationMembers'});
+// userModel.belongsTo(organizationModel, {foreignKey: "organizationId",as: "relatedOrganization"});
 
-userModel.hasOne(projectModel, { foreignKey: "projectManagerId" });
-projectModel.belongsTo(userModel, { foreignKey: "projectManagerId" });
+// organizationModel.hasMany(projectModel, { foreignKey: "organizationId" , as:'organizationProjects'});
+// projectModel.belongsTo(organizationModel, { foreignKey: "organizationId" ,as:"relatedOrganization"});
 
-userModel.belongsToMany(projectModel,{through:"user_project"});
-projectModel.belongsToMany(userModel,{through:"user_project"});
+userModel.hasMany(projectModel, {foreignKey: "projectManagerId",as: "managedProjects"});
+projectModel.belongsTo(userModel, {foreignKey: "projectManagerId",as: "projectManager"});
 
-teamModel.hasMany(userModel, { foreignKey: "teamId" });
-userModel.belongsTo(teamModel, { foreignKey: "teamId" });
+projectModel.hasMany(teamModel, { foreignKey: "projectId",as:"teams" });
+teamModel.belongsTo(projectModel, {foreignKey: "projectId",as:"relatedProject"});
 
-userModel.hasOne(teamModel, { foreignKey: "teamLeaderId" });
-teamModel.belongsTo(userModel, { foreignKey: "teamLeaderId" });
+userModel.hasMany(teamModel, { foreignKey: "teamLeaderId", as: "leadedTeam" });
+teamModel.belongsTo(userModel, {foreignKey: "teamLeaderId",as: "teamLeader"});
 
-projectModel.hasMany(teamModel, { foreignKey: "relatedProjectId" });
-teamModel.belongsTo(projectModel, { foreignKey: "relatedProjectId" });
+userModel.belongsToMany(teamModel,{through:"user_team",as:"memberOf"});
+teamModel.belongsToMany(userModel,{through:"user_team",as:"teamMembers"});
 
-teamModel.hasMany(taskModel, { foreignKey: "assigneeTeamId" });
-taskModel.belongsTo(teamModel, { foreignKey: "assigneeTeamId" });
+// teamModel.hasMany(taskModel, { foreignKey: "teamId", as:"tasks" });
+// taskModel.belongsTo(teamModel, { foreignKey: "teamId",as:"assigneeTeam" });
+
+userModel.hasMany(taskModel,{foreignKey:"userId",as:"assignedTasks"});
+taskModel.belongsTo(userModel, { foreignKey: "userId",as:"assigneeUser" });
 
 
 module.exports = {
@@ -40,4 +45,5 @@ module.exports = {
     projectModel,
     taskModel,
     teamModel,
+    organizationModel,
 };

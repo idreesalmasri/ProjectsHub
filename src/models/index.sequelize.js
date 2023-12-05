@@ -7,7 +7,19 @@ const { projectModelCreator } = require("./projects.model");
 const { taskModelCreator } = require("./tasks.model");
 const {teamModelCreator}=require('./teams.model')
 const {organizationModelCreator}=require('./organization.model')
-const sequelize=new Sequelize(dbString,{});
+let sequelizeOptions =
+    process.env.NODE_ENV === "production"
+        ? {
+              dialectOptions: {
+                  ssl: {
+                      require: true,
+                      rejectUnauthorized: false,
+                  },
+              },
+          }
+        : {};
+
+const sequelize = new Sequelize(dbString, sequelizeOptions);
 const userModel=usersModelCreator(sequelize,DataTypes);
 const projectModel=projectModelCreator(sequelize,DataTypes)
 const taskModel=taskModelCreator(sequelize,DataTypes);

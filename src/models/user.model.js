@@ -15,6 +15,7 @@ const usersModelCreator = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
+            isEmail: true,
         },
         phoneNumber: {
             type: DataTypes.STRING,

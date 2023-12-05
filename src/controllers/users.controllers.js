@@ -20,11 +20,13 @@ const createUser=async(req,res,next)=>{
         const hashedPass=await bcrypt.hash(req.body.password,10);
         req.body.password=hashedPass;
         const newUser = await userModel.create(req.body);
+        const {password,...userData}=newUser.toJSON();
         res.status(201).json({
             message: "created succecfuly",
-            user: newUser
-        })
+            user: userData,
+        });
     } catch (error) {
+        console.log(error.detail);
         next(error)
     }
 }

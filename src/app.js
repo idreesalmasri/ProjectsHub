@@ -15,9 +15,11 @@ const start=()=>{
 const userRouter=require('./routes/user.routes');
 const projectRouter=require('./routes/project.routes');
 const teamRouter=require('./routes/team.routes');
+const taskRouter=require('./routes/task.routes');
 app.use('/user',userRouter);
 app.use('/project',projectRouter);
 app.use('/team',teamRouter);
+app.use('/task',taskRouter);
 app.get('/',(req,res)=>{
     res.status(200).send('wlcome to the home page');
 })

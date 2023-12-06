@@ -4,7 +4,26 @@ const { teamModel, projectModel, userModel } = require("../models/index.sequeliz
 
 const getTeams = async (req, res, next) => {
     try {
-        const teams = await teamModel.findAll();
+        const teams = await teamModel.findAll({
+            include: [
+                {
+                    model: userModel,
+                    as: "teamMembers",
+                    attributes: ["id", "username"],
+                    through: { attributes: [] }, // to exclude the join table record
+                },
+                {
+                    model: userModel,
+                    attributes: ["id", "username"],
+                    as: "teamLeader",
+                },
+                {
+                    model: projectModel,
+                    attributes: ["id", "projectName"],
+                    as: "relatedProject",
+                },
+            ],
+        });
         res.status(200).json(teams);
     } catch (error) {
         next(error);

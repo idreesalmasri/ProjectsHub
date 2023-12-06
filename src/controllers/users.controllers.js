@@ -17,8 +17,10 @@ const getUser=async(req,res,next)=>{
 
 const createUser=async(req,res,next)=>{
     try {
-        const hashedPass=await bcrypt.hash(req.body.password,10);
-        req.body.password=hashedPass;
+        if(req.body.password){
+            const hashedPass=await bcrypt.hash(req.body.password,10);
+            req.body.password=hashedPass;
+        }
         const newUser = await userModel.create(req.body);
         const {password,...userData}=newUser.toJSON();
         res.status(201).json({
@@ -26,12 +28,16 @@ const createUser=async(req,res,next)=>{
             user: userData,
         });
     } catch (error) {
-        // console.log(error.errors[0].path);
         if (error.name === "SequelizeUniqueConstraintError"){
             return res.status(400).json({
                 message:"Invalid data provided",
                 details:error.parent.detail
             })
+        }
+        if (error.name === "SequelizeValidationError"){
+            return res.status(400).json({
+                message: error.message,
+            });
         }
         next(error);
     }
@@ -43,8 +49,21 @@ const signInHandler=async (req,res,next)=>{
         next(error)
     }
 }
+
+const getRoleUsers = async (req, res, next) => {
+    try {
+        const list = await userModel.findAll({
+            where: { role: req.query.role },
+            attributes:['id','username']
+        });
+        res.status(200).json(list);
+    } catch (error) {
+        next();
+    }
+};
 module.exports = {
     getUser,
     createUser,
     signInHandler,
+    getRoleUsers,
 };

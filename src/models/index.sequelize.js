@@ -47,6 +47,9 @@ teamModel.belongsToMany(userModel,{through:"user_team",as:"teamMembers"});
 // teamModel.hasMany(taskModel, { foreignKey: "teamId", as:"tasks" });
 // taskModel.belongsTo(teamModel, { foreignKey: "teamId",as:"assigneeTeam" });
 
+projectModel.hasMany(taskModel, { foreignKey: "projectId", as: "tasks" });
+taskModel.belongsTo(projectModel,{foreignKey:'projectId',as:"project"});
+
 userModel.hasMany(taskModel,{foreignKey:"userId",as:"assignedTasks"});
 taskModel.belongsTo(userModel, { foreignKey: "userId",as:"assigneeUser" });
 

@@ -3,8 +3,9 @@
 const { taskModel, projectModel, userModel } = require("../models/index.sequelize");
 
 const newTask=async(req,res,next)=>{
+    const{userId,...rest}=req.body;
     const taskData = {
-        ...req.body,
+        ...rest,
         projectId: req.params.projectId,
     };
     try {
@@ -13,6 +14,7 @@ const newTask=async(req,res,next)=>{
             message:'created successfully',
             task
         })
+        await task.setAssigneeUser(req.body.userId);
     } catch (error) {
         next(error)
     }

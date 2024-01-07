@@ -20,6 +20,15 @@ const getProject = async (req, res, next) => {
 
 const createProject = async (req, res, next) => {
     try {
+        // const user=await findByPk(req.body.projectManagerId,{
+        //     attributes:["role",'usernsme']
+        // });
+        // if(user.role!=="projectManager"){
+        //     return res.status(400).json({
+        //         message:'failed',
+        //         details:`${user.username} can't be a project manager`
+        //     })
+        // }
         const newProject = await projectModel.create(req.body);
         if(req.body.teamName){
             const newTeam=await teamModel.create({name:req.body.teamName})

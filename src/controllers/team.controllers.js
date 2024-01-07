@@ -54,11 +54,19 @@ const getProjectTeams = async (req, res, next) => {
                 model: teamModel,
                 attributes: ["id", "name"],
                 as: "teams",
-                include: {
-                    model: userModel,
-                    attributes: ["id", "username"],
-                    as: "teamLeader",
-                },
+                include: [
+                    {
+                        model: userModel,
+                        attributes: ["id", "username"],
+                        as: "teamLeader",
+                    },
+                    {
+                        model: userModel,
+                        attributes: ["id", "username"],
+                        as: "teamMembers",
+                        through: { attributes: [] },
+                    },
+                ],
             },
         });
         res.status(200).json(teams);

@@ -8,8 +8,10 @@ const {
     createUser,
     signInHandler,
     getRoleUsers,
+    updateUser,
 } = require("../controllers/users.controllers");
 Router.route("/").get(getUser).post(createUser);
+Router.route("/:id").patch(updateUser);
 Router.post("/signin", basicAuth,signInHandler);
 Router.get('/role',getRoleUsers);
 

@@ -62,8 +62,19 @@ const getManagerProjects=async(req,res,next)=>{
         next(error);
     }
 }
+
+const deleteProject=async(req,res,next)=>{
+    try {
+        const projectToDelete=await projectModel.findByPk(req.params.projectId);
+        await projectToDelete.destroy();
+        res.status(204).end();
+    } catch (error) {
+        next(error)
+    }
+}
 module.exports = {
     getProject,
     createProject,
     getManagerProjects,
+    deleteProject,
 };

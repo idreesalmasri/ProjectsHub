@@ -10,11 +10,11 @@ const newTask=async(req,res,next)=>{
     };
     try {
         const task=await taskModel.create(taskData);
+        const updatedTask=await task.setAssigneeUser(req.body.userId);
         res.status(201).json({
-            message:'created successfully',
-            task
-        })
-        await task.setAssigneeUser(req.body.userId);
+            message: "created successfully",
+            updatedTask,
+        });
     } catch (error) {
         next(error)
     }

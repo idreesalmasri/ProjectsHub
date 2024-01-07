@@ -48,10 +48,18 @@ teamModel.belongsToMany(userModel,{through:"user_team",as:"teamMembers"});
 // taskModel.belongsTo(teamModel, { foreignKey: "teamId",as:"assigneeTeam" });
 
 projectModel.hasMany(taskModel, { foreignKey: "projectId", as: "tasks" });
-taskModel.belongsTo(projectModel,{foreignKey:'projectId',as:"project"});
+taskModel.belongsTo(projectModel, {
+    foreignKey: "projectId",
+    as: "project",
+    onDelete: "CASCADE",
+});
 
 userModel.hasMany(taskModel,{foreignKey:"userId",as:"assignedTasks"});
-taskModel.belongsTo(userModel, { foreignKey: "userId",as:"assigneeUser" });
+taskModel.belongsTo(userModel, {
+    foreignKey: "userId",
+    as: "assigneeUser",
+    onDelete: "CASCADE",
+});
 
 
 module.exports = {

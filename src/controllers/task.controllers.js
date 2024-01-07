@@ -19,7 +19,7 @@ const newTask=async(req,res,next)=>{
 }
 const getProjectTasks=async(req,res,next)=>{
     try {
-        const list = await projectModel.findByPk(req.params.projectId,{
+        const list = await projectModel.findByPk(req.params.projectId, {
             attributes: ["id", "projectName"],
             include: {
                 model: taskModel,
@@ -29,6 +29,8 @@ const getProjectTasks=async(req,res,next)=>{
                     as: "assigneeUser",
                     attributes: ["id", "username"],
                 },
+                separate: true,
+                order: [["createdAt", "DESC"]],
             },
         });
         res.status(200).json(list)
@@ -46,9 +48,11 @@ const getUserTasksInProject=async (req,res,next)=>{
                 include: {
                     model: userModel,
                     as: "assigneeUser",
-                    where:{id:req.params.userId},
+                    where: { id: req.params.userId },
                     attributes: ["id", "username"],
                 },
+                separate: true,
+                order: [["createdAt", "DESC"]],
             },
         });
         res.status(200).json(list)
@@ -57,5 +61,19 @@ const getUserTasksInProject=async (req,res,next)=>{
     }
 }
 
+const deleteTask=async(req,res,next)=>{
+    try {
+        const taskToDelete=await taskModel.findByPk(req.params.taskId);
+        await taskToDelete.destroy();
+        res.status(204).end();
+    } catch (error) {
+        next(error)
+    }
+}
 
-module.exports = { newTask, getProjectTasks, getUserTasksInProject };
+module.exports = {
+    newTask,
+    getProjectTasks,
+    getUserTasksInProject,
+    deleteTask,
+};

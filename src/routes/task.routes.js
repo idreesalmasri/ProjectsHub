@@ -5,7 +5,11 @@ const {
     newTask,
     getProjectTasks,
     getUserTasksInProject,
+    deleteTask,
 } = require("../controllers/task.controllers");
-Router.route("/:projectId").post(newTask).get(getProjectTasks);
+Router.route("/:projectId")
+    .post(newTask)
+    .get(getProjectTasks)
 Router.get("/:projectId/:userId", getUserTasksInProject);
+Router.delete("/:taskId", deleteTask);
 module.exports=Router;

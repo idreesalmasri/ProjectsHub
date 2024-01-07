@@ -5,11 +5,14 @@ const { projectModel, userModel,teamModel } = require("../models/index.sequelize
 const getProject = async (req, res, next) => {
     try {
         const projects = await projectModel.findAll({
-            include:[ {
-                model: userModel,
-                attributes: ["username"],
-                as: "projectManager",
-            }],
+            include: [
+                {
+                    model: userModel,
+                    attributes: ["username"],
+                    as: "projectManager",
+                },
+            ],
+            order: [["createdAt", "DESC"]],
         });
         if (projects.length) return res.status(200).json(projects);
         res.status(200).send("no project found");
